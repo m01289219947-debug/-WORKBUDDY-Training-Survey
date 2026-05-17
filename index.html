@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkBuddy AI 办公提效培训 · 学员反馈调研问卷</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1e40af;
+    --primary-light: #3b82f6;
+    --primary-dark: #1e3a5f;
+    --accent: #f59e0b;
+    --accent-light: #fbbf24;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --success: #10b981;
+    --danger: #ef4444;
+  }
+  * { font-family: 'Noto Sans SC', sans-serif; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); margin: 0; }
+
+  /* Gradient header */
+  .header-bg {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 50%, #1e40af 100%);
+    position: relative; overflow: hidden;
+  }
+  .header-bg::before {
+    content: ''; position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .header-bg::after {
+    content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 40px;
+    background: var(--bg);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+
+  /* Card styles */
+  .q-card {
+    background: var(--card); border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+    border: 1px solid var(--border);
+    transition: box-shadow 0.2s;
+  }
+  .q-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06); }
+
+  .section-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    background: linear-gradient(135deg, #dbeafe, #eff6ff); color: var(--primary);
+  }
+
+  /* Radio / Checkbox */
+  .opt-label {
+    display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+    border-radius: 10px; cursor: pointer; transition: all 0.15s;
+    border: 2px solid transparent; font-size: 14.5px; line-height: 1.5;
+  }
+  .opt-label:hover { background: #f0f7ff; border-color: #bfdbfe; }
+  .opt-label:has(input:checked) {
+    background: #eff6ff; border-color: var(--primary-light);
+  }
+  .opt-label:has(input:checked) .custom-radio,
+  .opt-label:has(input:checked) .custom-check {
+    border-color: var(--primary); background: var(--primary);
+  }
+  .opt-label:has(input:checked) .custom-check::after { opacity: 1; }
+  .opt-label:has(input:checked) .custom-radio::after { opacity: 1; }
+
+  .custom-radio {
+    width: 18px; height: 18px; border-radius: 50%; border: 2px solid #cbd5e1;
+    flex-shrink: 0; position: relative; transition: all 0.15s;
+  }
+  .custom-radio::after {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%); width: 8px; height: 8px;
+    background: white; border-radius: 50%; opacity: 0; transition: 0.15s;
+  }
+  .custom-check {
+    width: 18px; height: 18px; border-radius: 4px; border: 2px solid #cbd5e1;
+    flex-shrink: 0; position: relative; transition: all 0.15s;
+  }
+  .custom-check::after {
+    content: ''; position: absolute; top: 1px; left: 5px;
+    width: 5px; height: 9px; border: solid white; border-width: 0 2px 2px 0;
+    transform: rotate(45deg); opacity: 0; transition: 0.15s;
+  }
+
+  input[type="radio"], input[type="checkbox"] { position: absolute; opacity: 0; pointer-events: none; }
+
+  /* Textarea */
+  .text-area {
+    width: 100%; min-height: 100px; padding: 12px 16px;
+    border: 2px solid var(--border); border-radius: 12px;
+    font-size: 14px; resize: vertical; outline: none;
+    transition: border-color 0.2s; line-height: 1.6;
+  }
+  .text-area:focus { border-color: var(--primary-light); }
+  .text-area::placeholder { color: #94a3b8; }
+
+  /* Other input */
+  .other-input {
+    border: none; border-bottom: 2px solid var(--border);
+    outline: none; font-size: 14px; padding: 4px 0;
+    min-width: 140px; transition: border-color 0.2s;
+  }
+  .other-input:focus { border-color: var(--primary-light); }
+
+  /* Buttons */
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white; padding: 14px 48px; border-radius: 12px; font-size: 16px;
+    font-weight: 600; border: none; cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.4); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-tab {
+    padding: 10px 24px; border-radius: 10px; font-size: 14px; font-weight: 500;
+    border: 2px solid var(--border); background: white; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-tab:hover { border-color: var(--primary-light); color: var(--primary); }
+  .btn-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+  /* Nav tabs */
+  .nav-tabs {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(240,244,248,0.85); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; top: 24px; right: 24px; z-index: 1000;
+    padding: 16px 24px; border-radius: 12px; color: white;
+    font-weight: 500; font-size: 14px;
+    transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+  .toast.show { transform: translateX(0); }
+  .toast-success { background: linear-gradient(135deg, #059669, #10b981); }
+  .toast-error { background: linear-gradient(135deg, #dc2626, #ef4444); }
+
+  /* Stat cards */
+  .stat-card {
+    background: white; border-radius: 16px; padding: 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .stat-number {
+    font-size: 36px; font-weight: 700;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  /* Chart containers */
+  .chart-box {
+    background: white; border-radius: 16px; padding: 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  /* Progress bar */
+  .progress-track { background: #e2e8f0; height: 6px; border-radius: 3px; overflow: hidden; }
+  .progress-fill {
+    height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  }
+
+  /* Animations */
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  .animate-in { animation: fadeInUp 0.5s ease-out forwards; }
+
+  /* Question number */
+  .q-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white; display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; flex-shrink: 0;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+  /* Print */
+  @media print { .nav-tabs, .btn-primary, .toast { display: none !important; } }
+
+  @media (max-width: 640px) {
+    .stat-number { font-size: 28px; }
+    .opt-label { padding: 8px 12px; font-size: 13.5px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Toast notification -->
+<div id="toast" class="toast"></div>
+
+<!-- Header -->
+<div class="header-bg text-white py-12 md:py-16 px-4 text-center relative z-10">
+  <div class="max-w-3xl mx-auto">
+    <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm mb-4">
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"/></svg>
+      <span>预计填写时间 3 分钟</span>
+    </div>
+    <h1 class="text-2xl md:text-3xl font-bold mb-3 leading-tight">腾讯 WorkBuddy（龙虾）AI 办公提效培训</h1>
+    <p class="text-lg md:text-xl opacity-90 font-medium">学员反馈调研问卷</p>
+    <p class="mt-4 text-sm opacity-70 max-w-xl mx-auto leading-relaxed">
+      亲爱的同事，感谢您参与本次汇检公司的 WorkBuddy AI 办公提效专项培训！<br>
+      为优化后续培训内容、提升 AI 工具落地效果，诚邀您填写此问卷。<br>
+      问卷实行<span class="font-semibold">匿名填写</span>，所有数据仅用于课程优化与工作落地。
+    </p>
+  </div>
+</div>
+
+<!-- Navigation Tabs -->
+<div class="nav-tabs">
+  <div class="max-w-3xl mx-auto flex items-center gap-3 px-4 py-3">
+    <button class="btn-tab active" onclick="switchView('survey')" id="tab-survey">
+      <span class="flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        问卷填写
+      </span>
+    </button>
+    <button class="btn-tab" onclick="switchView('stats')" id="tab-stats">
+      <span class="flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        结果统计
+        <span id="resp-count-badge" class="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full hidden">0</span>
+      </span>
+    </button>
+    <button class="btn-tab" onclick="exportData()" id="tab-export" title="导出数据">
+      <span class="flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        导出
+      </span>
+    </button>
+  </div>
+</div>
+
+<!-- ============ SURVEY VIEW ============ -->
+<div id="view-survey" class="max-w-3xl mx-auto px-4 py-8">
+
+  <!-- Progress -->
+  <div class="mb-8">
+    <div class="flex justify-between items-center mb-2">
+      <span class="text-sm text-slate-500">填写进度</span>
+      <span class="text-sm font-semibold text-blue-600" id="progress-text">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-bar" style="width:0%"></div></div>
+  </div>
+
+  <form id="surveyForm" onsubmit="return false;">
+
+    <!-- Section 1 -->
+    <div class="mb-8 animate-in" style="animation-delay:0.1s">
+      <div class="mb-5"><span class="section-badge">📋 一、学员基础信息</span></div>
+
+      <div class="q-card p-6 mb-4">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">1</span>
+          <p class="font-medium text-[15px]">您所在的部门 / 岗位：</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1" id="q1-group">
+          <label class="opt-label"><input type="radio" name="q1" value="销售/售前"><span class="custom-radio"></span>销售 / 售前</label>
+          <label class="opt-label"><input type="radio" name="q1" value="项目实施/交付"><span class="custom-radio"></span>项目实施 / 交付</label>
+          <label class="opt-label"><input type="radio" name="q1" value="产品岗"><span class="custom-radio"></span>产品岗</label>
+          <label class="opt-label"><input type="radio" name="q1" value="研发岗"><span class="custom-radio"></span>研发岗</label>
+          <label class="opt-label"><input type="radio" name="q1" value="测试岗"><span class="custom-radio"></span>测试岗</label>
+          <label class="opt-label"><input type="radio" name="q1" value="运维岗"><span class="custom-radio"></span>运维岗</label>
+          <label class="opt-label"><input type="radio" name="q1" value="职能支持"><span class="custom-radio"></span>职能支持（行政/人事/财务等）</label>
+          <label class="opt-label"><input type="radio" name="q1" value="其他"><span class="custom-radio"></span>其他 <input type="text" class="other-input ml-1" id="q1-other" placeholder="请填写" onfocus="this.closest('label').querySelector('input[type=radio]').checked=true"></label>
+        </div>
+      </div>
+
+      <div class="q-card p-6">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">2</span>
+          <p class="font-medium text-[15px]">培训前您对 WorkBuddy 工具的了解程度：</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+          <label class="opt-label"><input type="radio" name="q2" value="完全不了解"><span class="custom-radio"></span>完全不了解</label>
+          <label class="opt-label"><input type="radio" name="q2" value="略有耳闻"><span class="custom-radio"></span>略有耳闻，未使用过</label>
+          <label class="opt-label"><input type="radio" name="q2" value="简单使用过"><span class="custom-radio"></span>简单使用过基础功能</label>
+          <label class="opt-label"><input type="radio" name="q2" value="熟练使用"><span class="custom-radio"></span>熟练使用</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="mb-8 animate-in" style="animation-delay:0.2s">
+      <div class="mb-5"><span class="section-badge">⭐ 二、培训整体评价</span></div>
+
+      <div class="q-card p-6 mb-4">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">3</span>
+          <p class="font-medium text-[15px]">本次培训课程整体满意度：</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+          <label class="opt-label"><input type="radio" name="q3" value="非常满意"><span class="custom-radio"></span>非常满意</label>
+          <label class="opt-label"><input type="radio" name="q3" value="满意"><span class="custom-radio"></span>满意</label>
+          <label class="opt-label"><input type="radio" name="q3" value="一般"><span class="custom-radio"></span>一般</label>
+          <label class="opt-label"><input type="radio" name="q3" value="不满意"><span class="custom-radio"></span>不满意</label>
+          <label class="opt-label"><input type="radio" name="q3" value="非常不满意"><span class="custom-radio"></span>非常不满意</label>
+        </div>
+      </div>
+
+      <div class="q-card p-6 mb-4">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">4</span>
+          <p class="font-medium text-[15px]">培训时长（1 天 6 小时）安排是否合理：</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+          <label class="opt-label"><input type="radio" name="q4" value="非常合理"><span class="custom-radio"></span>非常合理，节奏适中</label>
+          <label class="opt-label"><input type="radio" name="q4" value="合理"><span class="custom-radio"></span>合理</label>
+          <label class="opt-label"><input type="radio" name="q4" value="偏紧凑"><span class="custom-radio"></span>偏紧凑，内容过多</label>
+          <label class="opt-label"><input type="radio" name="q4" value="偏宽松"><span class="custom-radio"></span>偏宽松</label>
+        </div>
+      </div>
+
+      <div class="q-card p-6">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">5</span>
+          <p class="font-medium text-[15px]">培训形式（讲解 + 演示 + 实操 + 案例演练）是否符合学习需求：</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+          <label class="opt-label"><input type="radio" name="q5" value="非常符合"><span class="custom-radio"></span>非常符合，实操性强</label>
+          <label class="opt-label"><input type="radio" name="q5" value="符合"><span class="custom-radio"></span>符合</label>
+          <label class="opt-label"><input type="radio" name="q5" value="一般"><span class="custom-radio"></span>一般</label>
+          <label class="opt-label"><input type="radio" name="q5" value="不符合"><span class="custom-radio"></span>不符合，需调整</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="mb-8 animate-in" style="animation-delay:0.3s">
+      <div class="mb-5"><span class="section-badge">📖 三、课程内容与学习效果</span></div>
+
+      <div class="q-card p-6 mb-4">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">6</span>
+          <p class="font-medium text-[15px]">本次培训内容贴合实验室信息化企业办公场景：</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+          <label class="opt-label"><input type="radio" name="q6" value="非常贴合"><span class="custom-radio"></span>非常贴合</label>
+          <label class="opt-label"><input type="radio" name="q6" value="贴合"><span class="custom-radio"></span>贴合</label>
+          <label class="opt-label"><input type="radio" name="q6" value="一般"><span class="custom-radio"></span>一般</label>
+          <label class="opt-label"><input type="radio" name="q6" value="不贴合"><span class="custom-radio"></span>不贴合</label>
+        </div>
+      </div>
+
+      <div class="q-card p-6 mb-4">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">7</span>
+          <p class="font-medium text-[15px]">您是否掌握以下核心内容（可多选）：</p>
+        </div>
+        <div class="grid grid-cols-1 gap-1">
+          <label class="opt-label"><input type="checkbox" name="q7" value="基础操作"><span class="custom-check"></span>WorkBuddy 基础操作、界面功能及多平台联动配置</label>
+          <label class="opt-label"><input type="checkbox" name="q7" value="提示词"><span class="custom-check"></span>高质量提示词撰写方法与技巧</label>
+          <label class="opt-label"><input type="checkbox" name="q7" value="数字分身"><span class="custom-check"></span>个人数字分身创建与设置</label>
+          <label class="opt-label"><input type="checkbox" name="q7" value="数字员工"><span class="custom-check"></span>岗位专属数字员工搭建方法</label>
+          <label class="opt-label"><input type="checkbox" name="q7" value="文档ExcelPPT"><span class="custom-check"></span>文档 / Excel / PPT 高效办公实操技能</label>
+          <label class="opt-label"><input type="checkbox" name="q7" value="钉钉协同"><span class="custom-check"></span>WorkBuddy 与钉钉协同（日程/日报/图片识别）操作</label>
+          <label class="opt-label"><input type="checkbox" name="q7" value="桌面文档"><span class="custom-check"></span>桌面文档智能管理与文件规范处理</label>
+          <label class="opt-label"><input type="checkbox" name="q7" value="安全合规"><span class="custom-check"></span>AI 办公安全合规与敏感信息识别规范</label>
+          <label class="opt-label"><input type="checkbox" name="q7" value="自动化提醒"><span class="custom-check"></span>自动化提醒与信息推送设置方法</label>
+        </div>
+      </div>
+
+      <div class="q-card p-6 mb-4">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">8</span>
+          <p class="font-medium text-[15px]">培训内容难易程度：</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+          <label class="opt-label"><input type="radio" name="q8" value="过于简单"><span class="custom-radio"></span>过于简单，无收获</label>
+          <label class="opt-label"><input type="radio" name="q8" value="适中"><span class="custom-radio"></span>适中，易于理解掌握</label>
+          <label class="opt-label"><input type="radio" name="q8" value="偏难"><span class="custom-radio"></span>偏难，部分内容听不懂</label>
+          <label class="opt-label"><input type="radio" name="q8" value="很难"><span class="custom-radio"></span>很难，完全跟不上</label>
+        </div>
+      </div>
+
+      <div class="q-card p-6 mb-4">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">9</span>
+          <p class="font-medium text-[15px]">本次培训最让您有收获的内容是（可多选）：</p>
+        </div>
+        <div class="grid grid-cols-1 gap-1">
+          <label class="opt-label"><input type="checkbox" name="q9" value="数字分身+员工"><span class="custom-check"></span>数字分身 + 数字员工搭建逻辑</label>
+          <label class="opt-label"><input type="checkbox" name="q9" value="提示词模板"><span class="custom-check"></span>提示词实用模板与案例</label>
+          <label class="opt-label"><input type="checkbox" name="q9" value="实操案例"><span class="custom-check"></span>岗位专属 AI 办公实操案例</label>
+          <label class="opt-label"><input type="checkbox" name="q9" value="安全合规"><span class="custom-check"></span>AI 办公安全合规规范</label>
+          <label class="opt-label"><input type="checkbox" name="q9" value="协同自动化"><span class="custom-check"></span>多平台协同与自动化操作</label>
+          <label class="opt-label"><input type="checkbox" name="q9" value="桌面文档管理"><span class="custom-check"></span>桌面文档智能管理技巧</label>
+        </div>
+      </div>
+
+      <div class="q-card p-6">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">10</span>
+          <p class="font-medium text-[15px]">培训讲解内容是否存在重复、晦涩难懂的情况：</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+          <label class="opt-label"><input type="radio" name="q10" value="完全没有"><span class="custom-radio"></span>完全没有</label>
+          <label class="opt-label"><input type="radio" name="q10" value="少量"><span class="custom-radio"></span>少量，不影响学习</label>
+          <label class="opt-label"><input type="radio" name="q10" value="较多"><span class="custom-radio"></span>较多，需优化</label>
+          <label class="opt-label"><input type="radio" name="q10" value="大量"><span class="custom-radio"></span>大量，影响学习效果</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="mb-8 animate-in" style="animation-delay:0.4s">
+      <div class="mb-5"><span class="section-badge">🛠️ 四、实操与落地实用性</span></div>
+
+      <div class="q-card p-6 mb-4">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">11</span>
+          <p class="font-medium text-[15px]">培训中的实操演练环节，是否能独立完成操作：</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+          <label class="opt-label"><input type="radio" name="q11" value="完全独立"><span class="custom-radio"></span>完全可以独立完成</label>
+          <label class="opt-label"><input type="radio" name="q11" value="基本可以"><span class="custom-radio"></span>基本可以，少量需帮助</label>
+          <label class="opt-label"><input type="radio" name="q11" value="大部分需指导"><span class="custom-radio"></span>大部分需指导</label>
+          <label class="opt-label"><input type="radio" name="q11" value="完全不会"><span class="custom-radio"></span>完全不会</label>
+        </div>
+      </div>
+
+      <div class="q-card p-6 mb-4">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">12</span>
+          <p class="font-medium text-[15px]">您认为 WorkBuddy 工具能否切实提升您的日常办公效率：</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+          <label class="opt-label"><input type="radio" name="q12" value="大幅提升"><span class="custom-radio"></span>大幅提升，实用性极强</label>
+          <label class="opt-label"><input type="radio" name="q12" value="一定提升"><span class="custom-radio"></span>一定提升</label>
+          <label class="opt-label"><input type="radio" name="q12" value="效果一般"><span class="custom-radio"></span>效果一般</label>
+          <label class="opt-label"><input type="radio" name="q12" value="无法提升"><span class="custom-radio"></span>无法提升</label>
+        </div>
+      </div>
+
+      <div class="q-card p-6 mb-4">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">13</span>
+          <p class="font-medium text-[15px]">后续工作中，您是否愿意主动使用 WorkBuddy：</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+          <label class="opt-label"><input type="radio" name="q13" value="高频使用"><span class="custom-radio"></span>一定会，高频使用</label>
+          <label class="opt-label"><input type="radio" name="q13" value="尝试使用"><span class="custom-radio"></span>会，尝试使用</label>
+          <label class="opt-label"><input type="radio" name="q13" value="不确定"><span class="custom-radio"></span>不确定，看需求</label>
+          <label class="opt-label"><input type="radio" name="q13" value="不会"><span class="custom-radio"></span>不会，没必要</label>
+        </div>
+      </div>
+
+      <div class="q-card p-6">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">14</span>
+          <p class="font-medium text-[15px]">您可独立落地使用的 WorkBuddy 办公场景（可多选）：</p>
+        </div>
+        <div class="grid grid-cols-1 gap-1">
+          <label class="opt-label"><input type="checkbox" name="q14" value="文档撰写"><span class="custom-check"></span>文档撰写 / 报告生成 / SOP 优化</label>
+          <label class="opt-label"><input type="checkbox" name="q14" value="Excel"><span class="custom-check"></span>Excel 数据分析与报表制作</label>
+          <label class="opt-label"><input type="checkbox" name="q14" value="PPT"><span class="custom-check"></span>PPT 自动生成与优化</label>
+          <label class="opt-label"><input type="checkbox" name="q14" value="文件管理"><span class="custom-check"></span>桌面文件整理、命名与规范管理</label>
+          <label class="opt-label"><input type="checkbox" name="q14" value="钉钉协同"><span class="custom-check"></span>钉钉协同（日程/日报/信息录入）</label>
+          <label class="opt-label"><input type="checkbox" name="q14" value="自动化"><span class="custom-check"></span>自动化提醒与信息推送</label>
+          <label class="opt-label"><input type="checkbox" name="q14" value="数字员工分身"><span class="custom-check"></span>岗位数字员工 / 分身日常调用</label>
+          <label class="opt-label"><input type="checkbox" name="q14" value="暂无法落地"><span class="custom-check"></span>暂无法落地，需进一步指导</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 5 -->
+    <div class="mb-8 animate-in" style="animation-delay:0.5s">
+      <div class="mb-5"><span class="section-badge">💡 五、培训需求与优化建议</span></div>
+
+      <div class="q-card p-6 mb-4">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">15</span>
+          <p class="font-medium text-[15px]">后续您希望补充哪些培训内容（可多选）：</p>
+        </div>
+        <div class="grid grid-cols-1 gap-1">
+          <label class="opt-label"><input type="checkbox" name="q15" value="进阶功能"><span class="custom-check"></span>WorkBuddy 进阶功能与复杂操作</label>
+          <label class="opt-label"><input type="checkbox" name="q15" value="专属案例"><span class="custom-check"></span>更多实验室信息化专属场景案例</label>
+          <label class="opt-label"><input type="checkbox" name="q15" value="分身员工优化"><span class="custom-check"></span>各岗位数字分身 / 员工优化技巧</label>
+          <label class="opt-label"><input type="checkbox" name="q15" value="答疑辅导"><span class="custom-check"></span>AI 办公问题答疑与实操辅导</label>
+          <label class="opt-label"><input type="checkbox" name="q15" value="多Agent"><span class="custom-check"></span>多 Agent 协同深度应用</label>
+          <label class="opt-label"><input type="checkbox" name="q15" value="无需补充"><span class="custom-check"></span>无需补充，现有内容已足够</label>
+        </div>
+      </div>
+
+      <div class="q-card p-6 mb-4">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">16</span>
+          <p class="font-medium text-[15px]">您希望的后续培训 / 辅导形式：</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+          <label class="opt-label"><input type="radio" name="q16" value="线下实操"><span class="custom-radio"></span>线下实操答疑课</label>
+          <label class="opt-label"><input type="radio" name="q16" value="线上视频"><span class="custom-radio"></span>线上视频教程</label>
+          <label class="opt-label"><input type="radio" name="q16" value="一对一"><span class="custom-radio"></span>一对一指导</label>
+          <label class="opt-label"><input type="radio" name="q16" value="资料自学"><span class="custom-radio"></span>操作手册 / 资料自学</label>
+        </div>
+      </div>
+
+      <div class="q-card p-6 mb-4">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">17</span>
+          <p class="font-medium text-[15px]">本次培训最需要改进优化的地方：</p>
+        </div>
+        <textarea class="text-area" id="q17" placeholder="请写下您的改进建议..."></textarea>
+      </div>
+
+      <div class="q-card p-6">
+        <div class="flex items-start gap-3 mb-4">
+          <span class="q-num">18</span>
+          <p class="font-medium text-[15px]">您对 WorkBuddy 工具落地、AI 办公提效的其他建议：</p>
+        </div>
+        <textarea class="text-area" id="q18" placeholder="请写下您的宝贵建议..."></textarea>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="text-center pb-12">
+      <button type="button" class="btn-primary" onclick="submitSurvey()">
+        提交问卷
+      </button>
+      <p class="text-xs text-slate-400 mt-3">再次感谢您的宝贵反馈！祝您在工作中熟练运用 AI 工具，高效办公！</p>
+    </div>
+  </form>
+</div>
+
+<!-- ============ STATS VIEW ============ -->
+<div id="view-stats" class="max-w-4xl mx-auto px-4 py-8 hidden">
+
+  <!-- Empty state -->
+  <div id="stats-empty" class="text-center py-20">
+    <div class="text-6xl mb-4">📊</div>
+    <h3 class="text-xl font-semibold text-slate-700 mb-2">暂无调研数据</h3>
+    <p class="text-slate-500">问卷提交后将自动生成统计图表</p>
+  </div>
+
+  <!-- Stats content -->
+  <div id="stats-content" class="hidden">
+    <!-- Overview -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="stat-card text-center">
+        <div class="stat-number" id="stat-total">0</div>
+        <div class="text-sm text-slate-500 mt-1">总提交数</div>
+      </div>
+      <div class="stat-card text-center">
+        <div class="stat-number" id="stat-satisfied">0%</div>
+        <div class="text-sm text-slate-500 mt-1">满意率</div>
+      </div>
+      <div class="stat-card text-center">
+        <div class="stat-number" id="stat-independent">0%</div>
+        <div class="text-sm text-slate-500 mt-1">可独立实操</div>
+      </div>
+      <div class="stat-card text-center">
+        <div class="stat-number" id="stat-willing">0%</div>
+        <div class="text-sm text-slate-500 mt-1">愿意使用</div>
+      </div>
+    </div>
+
+    <!-- Charts grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="chart-box">
+        <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q1 · 部门/岗位分布</h3>
+        <canvas id="chart-q1" height="220"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q2 · 培训前了解程度</h3>
+        <canvas id="chart-q2" height="220"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q3 · 整体满意度</h3>
+        <canvas id="chart-q3" height="220"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q4 · 培训时长合理性</h3>
+        <canvas id="chart-q4" height="220"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q5 · 培训形式符合度</h3>
+        <canvas id="chart-q5" height="220"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q6 · 场景贴合度</h3>
+        <canvas id="chart-q6" height="220"></canvas>
+      </div>
+    </div>
+
+    <!-- Multi-select charts -->
+    <div class="chart-box mb-6">
+      <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q7 · 核心内容掌握情况</h3>
+      <canvas id="chart-q7" height="160"></canvas>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="chart-box">
+        <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q8 · 内容难易程度</h3>
+        <canvas id="chart-q8" height="220"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q9 · 最有收获的内容</h3>
+        <canvas id="chart-q9" height="220"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q10 · 内容讲解清晰度</h3>
+        <canvas id="chart-q10" height="220"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q11 · 实操独立完成度</h3>
+        <canvas id="chart-q11" height="220"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q12 · 效率提升预期</h3>
+        <canvas id="chart-q12" height="220"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q13 · 后续使用意愿</h3>
+        <canvas id="chart-q13" height="220"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-box mb-6">
+      <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q14 · 可独立落地的办公场景</h3>
+      <canvas id="chart-q14" height="160"></canvas>
+    </div>
+    <div class="chart-box mb-6">
+      <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q15 · 希望补充的培训内容</h3>
+      <canvas id="chart-q15" height="160"></canvas>
+    </div>
+    <div class="chart-box mb-6">
+      <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q16 · 希望的培训形式</h3>
+      <canvas id="chart-q16" height="220"></canvas>
+    </div>
+
+    <!-- Open-ended feedback -->
+    <div class="chart-box mb-6">
+      <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q17 · 改进建议</h3>
+      <div id="q17-list" class="space-y-3 max-h-80 overflow-y-auto"></div>
+    </div>
+    <div class="chart-box mb-8">
+      <h3 class="font-semibold text-slate-700 mb-4 text-[15px]">Q18 · 其他建议</h3>
+      <div id="q18-list" class="space-y-3 max-h-80 overflow-y-auto"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ DATA STORE (Cloud + Local Fallback) ============
+const CLOUD_API = 'https://jsonblob.com/api/jsonBlob/019e3518-1027-7115-a242-c54d6b405fff';
+const STORAGE_KEY = 'workbuddy_survey_data';
+const SUBMITTED_KEY = 'workbuddy_survey_submitted';
+let cloudETag = '';
+
+// Fetch from cloud, fallback to localStorage
+async function getResponses() {
+  try {
+    const res = await fetch(CLOUD_API);
+    if (!res.ok) throw new Error('Cloud fetch failed');
+    cloudETag = res.headers.get('ETag') || '';
+    const json = await res.json();
+    const data = Array.isArray(json.responses) ? json.responses : [];
+    // Sync to local cache
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    return data;
+  } catch (e) {
+    console.warn('Cloud fetch failed, using local cache:', e);
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch { return []; }
+  }
+}
+
+// Save to cloud + local
+async function saveResponses(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  try {
+    // Read latest from cloud first to avoid overwrite conflicts
+    const latestRes = await fetch(CLOUD_API);
+    if (latestRes.ok) {
+      const latest = await latestRes.json();
+      const latestData = Array.isArray(latest.responses) ? latest.responses : [];
+      // Merge: use cloud data as source of truth, add any new local entries
+      const merged = [...latestData];
+      data.forEach(item => {
+        if (!merged.find(r => r.id === item.id)) merged.push(item);
+      });
+      const headers = { 'Content-Type': 'application/json' };
+      if (latestRes.headers.get('ETag')) {
+        headers['If-Match'] = latestRes.headers.get('ETag');
+      }
+      await fetch(CLOUD_API, { method: 'PUT', headers, body: JSON.stringify({ responses: merged, created: '2026-05-17' }) });
+    }
+  } catch (e) {
+    console.warn('Cloud save failed, data saved locally only:', e);
+  }
+}
+
+function hasSubmitted() { return localStorage.getItem(SUBMITTED_KEY) === 'true'; }
+
+// ============ PROGRESS TRACKER ============
+const radioQuestions = ['q1','q2','q3','q4','q5','q6','q8','q10','q11','q12','q13','q16'];
+const checkboxQuestions = ['q7','q9','q14','q15'];
+const totalQuestions = 18; // 14 radio/checkbox + 2 textarea + q1-other logic
+
+function updateProgress() {
+  let answered = 0;
+  radioQuestions.forEach(name => {
+    if (document.querySelector(`input[name="${name}"]:checked`)) answered++;
+  });
+  checkboxQuestions.forEach(name => {
+    if (document.querySelector(`input[name="${name}"]:checked`)) answered++;
+  });
+  if (document.getElementById('q17').value.trim()) answered++;
+  if (document.getElementById('q18').value.trim()) answered++;
+
+  const pct = Math.round((answered / totalQuestions) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = pct + '%';
+}
+
+document.getElementById('surveyForm').addEventListener('change', updateProgress);
+document.getElementById('surveyForm').addEventListener('input', updateProgress);
+
+// ============ VIEW SWITCH ============
+async function switchView(view) {
+  document.getElementById('view-survey').classList.toggle('hidden', view !== 'survey');
+  document.getElementById('view-stats').classList.toggle('hidden', view !== 'stats');
+  document.getElementById('tab-survey').classList.toggle('active', view === 'survey');
+  document.getElementById('tab-stats').classList.toggle('active', view === 'stats');
+  if (view === 'stats') {
+    // Show loading state
+    document.getElementById('stats-empty').classList.remove('hidden');
+    document.getElementById('stats-content').classList.add('hidden');
+    await renderStats();
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============ TOAST ============
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast toast-${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ============ SUBMIT ============
+async function submitSurvey() {
+  // Validate required
+  let unanswered = [];
+  radioQuestions.forEach(name => {
+    if (!document.querySelector(`input[name="${name}"]:checked`)) unanswered.push(name);
+  });
+
+  if (unanswered.length > 0) {
+    showToast('请完成所有单选题后再提交', 'error');
+    const firstUnanswered = unanswered[0];
+    const el = document.querySelector(`input[name="${firstUnanswered}"]`);
+    if (el) el.closest('.q-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  const data = {};
+  radioQuestions.forEach(name => {
+    const checked = document.querySelector(`input[name="${name}"]:checked`);
+    if (checked) data[name] = checked.value;
+  });
+  checkboxQuestions.forEach(name => {
+    const checked = [...document.querySelectorAll(`input[name="${name}"]:checked`)];
+    data[name] = checked.map(c => c.value);
+  });
+  data.q17 = document.getElementById('q17').value.trim();
+  data.q18 = document.getElementById('q18').value.trim();
+
+  // Handle q1 other
+  if (data.q1 === '其他') {
+    data.q1 = '其他: ' + (document.getElementById('q1-other').value.trim() || '未填写');
+  }
+
+  // Timestamp
+  data.timestamp = new Date().toISOString();
+  data.id = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+
+  // Disable form immediately
+  const btn = document.querySelector('.btn-primary');
+  btn.textContent = '提交中...';
+  btn.disabled = true;
+  document.querySelectorAll('#surveyForm input, #surveyForm textarea').forEach(el => el.disabled = true);
+
+  const responses = await getResponses();
+  responses.push(data);
+  await saveResponses(responses);
+  localStorage.setItem(SUBMITTED_KEY, 'true');
+
+  updateBadge();
+
+  btn.textContent = '已提交';
+  showToast('问卷提交成功，感谢您的反馈！', 'success');
+  document.getElementById('progress-bar').style.width = '100%';
+  document.getElementById('progress-text').textContent = '100%';
+}
+
+// ============ EXPORT ============
+async function exportData() {
+  const data = await getResponses();
+  if (data.length === 0) {
+    showToast('暂无数据可导出', 'error');
+    return;
+  }
+
+  // CSV export
+  const headers = ['序号','提交时间','Q1-部门/岗位','Q2-了解程度','Q3-整体满意度','Q4-时长合理性',
+    'Q5-培训形式','Q6-场景贴合度','Q7-核心内容掌握','Q8-难易程度','Q9-最有收获','Q10-讲解清晰度',
+    'Q11-实操独立度','Q12-效率提升预期','Q13-使用意愿','Q14-可落地场景','Q15-希望补充内容',
+    'Q16-培训形式偏好','Q17-改进建议','Q18-其他建议'];
+
+  const rows = data.map((d, i) => [
+    i + 1,
+    new Date(d.timestamp).toLocaleString('zh-CN'),
+    d.q1 || '', d.q2 || '', d.q3 || '', d.q4 || '', d.q5 || '', d.q6 || '',
+    Array.isArray(d.q7) ? d.q7.join('; ') : '',
+    d.q8 || '',
+    Array.isArray(d.q9) ? d.q9.join('; ') : '',
+    d.q10 || '', d.q11 || '', d.q12 || '', d.q13 || '',
+    Array.isArray(d.q14) ? d.q14.join('; ') : '',
+    Array.isArray(d.q15) ? d.q15.join('; ') : '',
+    d.q16 || '', d.q17 || '', d.q18 || ''
+  ]);
+
+  // BOM + CSV
+  let csv = '\uFEFF' + headers.join(',') + '\n';
+  rows.forEach(row => {
+    csv += row.map(cell => '"' + String(cell).replace(/"/g, '""') + '"').join(',') + '\n';
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `WorkBuddy培训反馈_${new Date().toLocaleDateString('zh-CN').replace(/\//g,'-')}.csv`;
+  link.click();
+  showToast('数据已导出为 CSV 文件', 'success');
+}
+
+// ============ STATS RENDERING ============
+const chartInstances = {};
+
+const CHART_COLORS = [
+  '#3b82f6','#f59e0b','#10b981','#ef4444','#8b5cf6','#ec4899','#06b6d4','#84cc16','#f97316'
+];
+const CHART_COLORS_ALPHA = CHART_COLORS.map(c => c + '33');
+
+function countValues(responses, key) {
+  const counts = {};
+  responses.forEach(r => {
+    if (Array.isArray(r[key])) {
+      r[key].forEach(v => { counts[v] = (counts[v] || 0) + 1; });
+    } else if (r[key]) {
+      counts[r[key]] = (counts[r[key]] || 0) + 1;
+    }
+  });
+  return counts;
+}
+
+function createDoughnut(canvasId, data, label) {
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+  if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+
+  const labels = Object.keys(data);
+  const values = Object.values(data);
+  const colors = labels.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]);
+
+  chartInstances[canvasId] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors,
+        borderWidth: 2,
+        borderColor: '#fff',
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true, pointStyleWidth: 10, font: { size: 12 } } }
+      },
+      cutout: '55%'
+    }
+  });
+}
+
+function createBar(canvasId, data) {
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+  if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+
+  const labels = Object.keys(data);
+  const values = Object.values(data);
+  const total = values.reduce((a,b) => a + b, 0);
+  const colors = labels.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]);
+
+  chartInstances[canvasId] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors,
+        borderRadius: 6,
+        borderSkipped: false,
+        barThickness: labels.length > 6 ? 20 : 28
+      }]
+    },
+    options: {
+      indexAxis: labels.length > 6 ? 'y' : 'x',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const pct = total > 0 ? ((ctx.raw / total) * 100).toFixed(1) : 0;
+              return `${ctx.raw} 人 (${pct}%)`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: labels.length > 6 ? { grid: { display: false }, ticks: { font: { size: 11 } } } : { grid: { display: false } },
+        y: labels.length > 6 ? { grid: { display: false }, ticks: { font: { size: 11 } } } : { grid: { display: false }, ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+function renderOpenEnded(containerId, responses, key) {
+  const el = document.getElementById(containerId);
+  const items = responses.map(r => r[key]).filter(v => v && v.trim());
+  if (items.length === 0) {
+    el.innerHTML = '<p class="text-slate-400 text-sm">暂无文字反馈</p>';
+    return;
+  }
+  el.innerHTML = items.map(text => `
+    <div class="bg-slate-50 rounded-lg p-3 border border-slate-100">
+      <p class="text-sm text-slate-700 leading-relaxed">${escapeHtml(text)}</p>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+async function renderStats() {
+  const responses = await getResponses();
+  const isEmpty = responses.length === 0;
+
+  document.getElementById('stats-empty').classList.toggle('hidden', !isEmpty);
+  document.getElementById('stats-content').classList.toggle('hidden', isEmpty);
+  if (isEmpty) return;
+
+  // Overview stats
+  document.getElementById('stat-total').textContent = responses.length;
+
+  // Satisfaction rate (q3: 非常满意 + 满意)
+  const satisfied = responses.filter(r => r.q3 === '非常满意' || r.q3 === '满意').length;
+  document.getElementById('stat-satisfied').textContent = Math.round((satisfied / responses.length) * 100) + '%';
+
+  // Independent (q11: 完全独立 + 基本可以)
+  const independent = responses.filter(r => r.q11 === '完全独立' || r.q11 === '基本可以').length;
+  document.getElementById('stat-independent').textContent = Math.round((independent / responses.length) * 100) + '%';
+
+  // Willing to use (q13: 高频 + 尝试)
+  const willing = responses.filter(r => r.q13 === '高频使用' || r.q13 === '尝试使用').length;
+  document.getElementById('stat-willing').textContent = Math.round((willing / responses.length) * 100) + '%';
+
+  // Render charts
+  createDoughnut('chart-q1', countValues(responses, 'q1'));
+  createDoughnut('chart-q2', countValues(responses, 'q2'));
+  createDoughnut('chart-q3', countValues(responses, 'q3'));
+  createDoughnut('chart-q4', countValues(responses, 'q4'));
+  createDoughnut('chart-q5', countValues(responses, 'q5'));
+  createDoughnut('chart-q6', countValues(responses, 'q6'));
+  createBar('chart-q7', countValues(responses, 'q7'));
+  createDoughnut('chart-q8', countValues(responses, 'q8'));
+  createBar('chart-q9', countValues(responses, 'q9'));
+  createDoughnut('chart-q10', countValues(responses, 'q10'));
+  createDoughnut('chart-q11', countValues(responses, 'q11'));
+  createDoughnut('chart-q12', countValues(responses, 'q12'));
+  createDoughnut('chart-q13', countValues(responses, 'q13'));
+  createBar('chart-q14', countValues(responses, 'q14'));
+  createBar('chart-q15', countValues(responses, 'q15'));
+  createDoughnut('chart-q16', countValues(responses, 'q16'));
+
+  renderOpenEnded('q17-list', responses, 'q17');
+  renderOpenEnded('q18-list', responses, 'q18');
+}
+
+// ============ BADGE ============
+async function updateBadge() {
+  const responses = await getResponses();
+  const count = responses.length;
+  const badge = document.getElementById('resp-count-badge');
+  if (count > 0) {
+    badge.textContent = count;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+// ============ INIT ============
+updateBadge();
+
+// Check if already submitted - restore form state
+if (hasSubmitted()) {
+  document.querySelectorAll('#surveyForm input, #surveyForm textarea').forEach(el => el.disabled = true);
+  document.querySelector('.btn-primary').textContent = '已提交';
+  document.querySelector('.btn-primary').disabled = true;
+  document.getElementById('progress-bar').style.width = '100%';
+  document.getElementById('progress-text').textContent = '100%';
+}
+</script>
+
+</body>
+</html>
